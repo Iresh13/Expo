@@ -1,20 +1,88 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// In App.js in a new project
 
-export default function App() {
+import * as React from "react";
+import { View, Text, Button } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import * as ImagePicker from "expo-image-picker";
+import { VideoConverter } from "./videoconverter";
+import axios from "axios";
+
+const HomeScreen = ({ navigation, route }) => {
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: false,
+      quality: 1,
+      base64: true,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      const converter = new VideoConverter();
+      const convertedUrl = await converter.uploadAndConvertVideo(result.assets[0]);
+
+      console.log(convertedUrl);
+    }
+  };
+
+  React.useEffect(() => {
+    if (route.params?.name) {
+      alert(route.params.name);
+    }
+  }, [route.params?.name]);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Home Screen</Text>
+      <Button title="Pick video" onPress={pickImage} />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const Stack = createNativeStackNavigator();
+
+const DetailsScreen = ({ navigation, route }) => {
+  const { name } = route.params;
+
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Details Screen</Text>
+
+      <Text>{name}</Text>
+      <Button
+        title="Go back"
+        onPress={() =>
+          navigation.navigate({
+            name: "Home",
+            params: { name: "Iresh" },
+            merge: true,
+          })
+        }
+      />
+    </View>
+  );
+};
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: "My home" }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          initialParams={{ name: "test" }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
