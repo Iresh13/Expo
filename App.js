@@ -1,13 +1,11 @@
-// In App.js in a new project
-
 import * as React from "react";
 import { View, Text, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import * as ImagePicker from "expo-image-picker";
-import { VideoConverter } from "./videoconverter";
-import axios from "axios";
+import { VideoConverter } from "./video-converter";
+
 
 const HomeScreen = ({ navigation, route }) => {
   const pickImage = async () => {
@@ -44,28 +42,6 @@ const HomeScreen = ({ navigation, route }) => {
 
 const Stack = createNativeStackNavigator();
 
-const DetailsScreen = ({ navigation, route }) => {
-  const { name } = route.params;
-
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Details Screen</Text>
-
-      <Text>{name}</Text>
-      <Button
-        title="Go back"
-        onPress={() =>
-          navigation.navigate({
-            name: "Home",
-            params: { name: "Iresh" },
-            merge: true,
-          })
-        }
-      />
-    </View>
-  );
-};
-
 const App = () => {
   return (
     <NavigationContainer>
@@ -74,11 +50,6 @@ const App = () => {
           name="Home"
           component={HomeScreen}
           options={{ title: "My home" }}
-        />
-        <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
-          initialParams={{ name: "test" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
