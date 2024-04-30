@@ -1,0 +1,2 @@
+- run npm i or yarn install 
+- expo start to run the app. 
